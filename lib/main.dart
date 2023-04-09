@@ -17,7 +17,7 @@ class Lets_Chat extends StatelessWidget {
         ),
         debugShowCheckedModeBanner: false,
         //home: WelcomeScreen(),
-        initialRoute: ChatScreen.id,
+        initialRoute: WelcomeScreen.id,
         routes: {
           WelcomeScreen.id: (context) => WelcomeScreen(),
           RegistrationScreen.id: (context) => RegistrationScreen(),

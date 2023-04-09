@@ -8,11 +8,55 @@ class WelcomeScreen extends StatefulWidget {
   _WelcomeScreenState createState() => _WelcomeScreenState();
 }
 
-class _WelcomeScreenState extends State<WelcomeScreen> {
+class _WelcomeScreenState extends State<WelcomeScreen>
+    with SingleTickerProviderStateMixin {
+  late AnimationController controller;
+  late Animation animation;
+  late Animation coloranimation;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    controller = AnimationController(
+      duration: Duration(seconds: 1),
+      //lowerBound: 0.2,
+      //upperBound: 1,
+      vsync: this,
+    );
+    animation = CurvedAnimation(parent: controller, curve: Curves.decelerate);
+    coloranimation = ColorTween(begin: Colors.grey.shade400, end: Colors.white)
+        .animate(controller);
+    controller.forward();
+
+    // to continue animation loop
+    // animation.addStatusListener((status) {
+    //   if (status == AnimationStatus.completed) {
+    //     controller.reverse(from: 1);
+    //   } else if (status == AnimationStatus.dismissed) {
+    //     controller.forward();
+    //   }
+    // });
+
+    controller.addListener(() {
+      setState(() {});
+      //print(controller.value);
+    });
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    controller.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      //backgroundColor: Colors.purple.shade100.withOpacity(controller.value),
+      backgroundColor: coloranimation.value,
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 24.0),
         child: Column(
@@ -21,14 +65,18 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
           children: <Widget>[
             Row(
               children: <Widget>[
-                Container(
-                  child: Image.asset('images/images/logo.png'),
-                  height: 60.0,
+                Hero(
+                  tag: 'animation',
+                  child: Container(
+                    child: Image.asset('images/images/logo.png'),
+                    height: controller.value * 90,
+                  ),
                 ),
                 Text(
-                  'Lets Chat',
+                  "Let's Chat",
                   style: TextStyle(
-                    fontSize: 45.0,
+                    fontSize: 50.0,
+                    // fontSize: animation.value * 75,
                     fontWeight: FontWeight.w900,
                   ),
                 ),
@@ -41,7 +89,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
               padding: EdgeInsets.symmetric(vertical: 16.0),
               child: Material(
                 elevation: 5.0,
-                color: Colors.lightBlueAccent,
+                color: Colors.blue.shade300,
                 borderRadius: BorderRadius.circular(30.0),
                 child: MaterialButton(
                   onPressed: () {
@@ -58,7 +106,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
             Padding(
               padding: EdgeInsets.symmetric(vertical: 16.0),
               child: Material(
-                color: Colors.blueAccent,
+                color: Colors.deepPurpleAccent,
                 borderRadius: BorderRadius.circular(30.0),
                 elevation: 5.0,
                 child: MaterialButton(
