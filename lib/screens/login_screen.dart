@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lets_chat/constants.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:lets_chat/screens/chat_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   static String id = "login_screen";
@@ -8,6 +10,10 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  String email = '';
+  String password = '';
+  final _auth = FirebaseAuth.instance;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,7 +39,9 @@ class _LoginScreenState extends State<LoginScreen> {
             TextField(
                 keyboardType: TextInputType.emailAddress,
                 textAlign: TextAlign.center,
-                onChanged: (value) {},
+                onChanged: (value) {
+                  email = value;
+                },
                 decoration:
                     kInputdecoration.copyWith(hintText: 'Enter your Email')),
             SizedBox(
@@ -42,7 +50,9 @@ class _LoginScreenState extends State<LoginScreen> {
             TextField(
                 textAlign: TextAlign.center,
                 obscureText: true,
-                onChanged: (value) {},
+                onChanged: (value) {
+                  password = value;
+                },
                 decoration:
                     kInputdecoration.copyWith(hintText: 'Enter your password')),
             SizedBox(
@@ -55,7 +65,18 @@ class _LoginScreenState extends State<LoginScreen> {
                 borderRadius: BorderRadius.all(Radius.circular(30.0)),
                 elevation: 5.0,
                 child: MaterialButton(
-                  onPressed: () {
+                  onPressed: () async {
+                    try {
+                      UserCredential user =
+                          await _auth.signInWithEmailAndPassword(
+                              email: email, password: password);
+
+                      if (user != null) {
+                        Navigator.pushNamed(context, ChatScreen.id);
+                      }
+                    } catch (e) {
+                      print(e);
+                    }
                     //Implement login functionality.
                   },
                   minWidth: 200.0,
