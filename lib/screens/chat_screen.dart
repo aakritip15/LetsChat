@@ -54,9 +54,9 @@ class _ChatScreenState extends State<ChatScreen> {
           IconButton(
               icon: Icon(Icons.logout),
               onPressed: () {
-                messagesStream();
-                // _auth.signOut();
-                // Navigator.pop(context);
+                // messagesStream();
+                _auth.signOut();
+                Navigator.pop(context);
               }),
         ],
         title: Text('Chat'),
@@ -67,6 +67,36 @@ class _ChatScreenState extends State<ChatScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
+            StreamBuilder<QuerySnapshot>(
+              stream: _firestore.collection("messages").snapshots(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  final messages = snapshot.data!.docs;
+                  List<Text> messageWidgets = [];
+                  for (var messages in messages) {
+                    final message = messages.data() as Map<String, dynamic>;
+                    final messageTxt = message['text'];
+                    final messageSender = message['sender'];
+
+                    final messageWidget =
+                        Text('$messageTxt from $messageSender');
+                    messageWidgets!.add(messageWidget);
+                  }
+
+                  //if (messageWidgets != null) {
+                  return Column(
+                    children: messageWidgets,
+                  );
+
+                  // }
+                  // else {
+                  //   return CircularProgressIndicator();
+                  // }
+                } else {
+                  return CircularProgressIndicator();
+                }
+              },
+            ),
             Container(
               decoration: kMessageContainerDecoration,
               child: Row(
@@ -82,13 +112,14 @@ class _ChatScreenState extends State<ChatScreen> {
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      _firestore.collection("messages").add({
-                        'text': messageText,
-                        'sender': loggedInUser.email,
-                      })
-                          //.then((value) => print(value.id))
-                          .catchError(
-                              (error) => print("Failed to add user: $error"));
+                      if (messageText != '') {
+                        _firestore.collection("messages").add({
+                          'text': messageText,
+                          'sender': loggedInUser.email,
+                        }) //.then((value) => print(value.id))
+                            .catchError(
+                                (error) => print("Failed to add user: $error"));
+                      }
                     },
                     child: Text(
                       'Send',

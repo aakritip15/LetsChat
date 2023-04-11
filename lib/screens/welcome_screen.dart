@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lets_chat/screens/registration_screen.dart';
 import 'login_screen.dart';
-import 'package:animated_text_kit/animated_text_kit.dart';
+//import 'package:animated_text_kit/animated_text_kit.dart';
 
 class WelcomeScreen extends StatefulWidget {
   static String id = "welcome_screen";
@@ -32,17 +32,18 @@ class _WelcomeScreenState extends State<WelcomeScreen>
     controller.forward();
 
     // to continue animation loop
-    // animation.addStatusListener((status) {
-    //   if (status == AnimationStatus.completed) {
-    //     controller.reverse(from: 1);
-    //   } else if (status == AnimationStatus.dismissed) {
-    //     controller.forward();
-    //   }
-    // });
+    animation.addStatusListener((status) {
+      // if (status == AnimationStatus.completed) {
+      //   controller.reverse(from: 1);
+      // } else if (status == AnimationStatus.dismissed) {
+      //   controller.forward();
+      //}
+      // print(status);
+    });
 
     controller.addListener(() {
       setState(() {});
-      //print(controller.value);
+      // print(controller.value);
     });
   }
 
@@ -76,8 +77,8 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                 Text(
                   "Let's Chat",
                   style: TextStyle(
-                    fontSize: 50.0,
-                    // fontSize: animation.value * 75,
+                    //fontSize: 50.0,
+                    fontSize: animation.value * 50,
                     fontWeight: FontWeight.w900,
                   ),
                 ),
